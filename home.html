@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>External Monitor Detect</title>
+  </head>
+  <body>
+
+    <h1>Method: Media Query</h1>
+    <h2 id="case">External Display Connected: 
+      <span>Not sure</span>
+    </h2>
+
+    <script>
+      const spanTag = document.getElementById("case").getElementsByTagName("span")[0];
+      let oldWidth = window.screen.availWidth;
+      let oldHeight = window.screen.availHeight;
+
+      function extraMonitorValue() {
+        const val = {
+          a: 0,
+          b: null,
+          c: 0
+        };
+        const mediaQuery = window.matchMedia('(min-width: 1025px) and (min-height: 769px) and (orientation: landscape) and (display-mode: fullscreen)');
+        if (mediaQuery.matches) {
+          val.a = 1;
+        } else {
+          val.a = 0;
+        }
+
+        if (window.screen.isExtended === true) {
+          val.b = 1;
+        }
+        if (window.screen.isExtended === false) {
+          val.b = 0;
+        }
+
+        if (Math.abs(window.screen.availWidth - oldWidth) > 50 || Math.abs(window.screen.availHeight - oldHeight) > 50) {
+          val.c = 1;
+        } else {
+          val.c = 0;
+        }
+        oldWidth = window.screen.availWidth;
+        oldHeight = window.screen.availHeight;
+
+        if (window.screen.isExtended === undefined) {
+            return (val.a * 40 + val.b * 60) / 100;
+        } else {
+            return (val.a * 40 + val.b * 30 + val.c * 30) / 100;
+        }
+
+      }
+
+
+      function detectExternalMonitor(callback) {
+        const val = 0;
+        setInterval(() => {
+          const v = extraMonitorValue();
+          if (v > 0.5) {
+            console.log('setinterval v', v);
+            callback(true);
+          }
+        }, 1000)
+        window.onresize = function () {
+          const v = extraMonitorValue();
+          if (v > 0.5) {
+            console.log('onresize v', v);
+            callback(true);
+          }
+        }
+      }
+
+      detectExternalMonitor(function(d) {
+        console.log('detected', d);
+      })
+    </script>
+
+  </body>
+</html>
