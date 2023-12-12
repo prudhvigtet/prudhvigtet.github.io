@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>External Monitor Detect</title>
+  </head>
+  <body>
+
+    <h1>Method: Media Query</h1>
+    <h2 id="case1">External Display Connected: 
+      <span>Not sure</span>
+    </h2>
+
+    <br>
+
+    <h1>Method: Screen Extend</h1>
+    <h2 id="case2">External Display Connected: 
+      <span>Not sure</span>
+    </h2>
+
+    <br>
+
+    <h1>Method: Screen Resolution</h1>
+    <h2 id="case3">External Display Connected: 
+      <span>Not sure</span>
+    </h2>
+
+    <script>
+      // Media query method
+      const mediaQuery = window.matchMedia('(min-width: 1025px) and (min-height: 769px) and (orientation: landscape) and (display-mode: fullscreen)');
+      function handleMediaQueryChange(event) {
+        const span1Tag = document.getElementById("case1").getElementsByTagName("span")[0];
+        if (event.matches) {
+          span1Tag.innerHTML = true;
+        } else {
+          span1Tag.innerHTML = false;
+        }
+      }
+      handleMediaQueryChange(mediaQuery);
+
+      // screen extend method
+      const span2Tag = document.getElementById("case2").getElementsByTagName("span")[0];
+      if (window.screen.isExtended) {
+        span2Tag.innerHTML = true;
+      } else {
+        span2Tag.innerHTML = false;
+      }
+
+      // screen resolution method
+      let oldWidth = window.screen.availWidth;
+      let oldHeight = window.screen.availHeight;
+      const span3Tag = document.getElementById("case3").getElementsByTagName("span")[0];
+      window.onresize = function () {
+        if (Math.abs(window.screen.availWidth - oldWidth) > 50 || Math.abs(window.screen.availHeight - oldHeight) > 50) {
+          // Monitor resolution might have changed - external monitor suspected
+          span3Tag.innerHTML = true;
+        }
+        oldWidth = window.screen.availWidth;
+        oldHeight = window.screen.availHeight;
+      };
+    </script>
+
+  </body>
+</html>
